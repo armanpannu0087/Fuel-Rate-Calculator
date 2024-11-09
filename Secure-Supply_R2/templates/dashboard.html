@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Dashboard</title>
+</head>
+<body class="container">
+
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <!-- <li><a href="#">View</a></li> -->
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+    
+     <!-- <div class="content">
+        <div class="content-header">
+            <h1>Dashboard</h1>
+        </div>
+
+        <div class="data-parent">
+            <div class="data current-invoice">
+                <h2>Current Month Invoices</h2>
+                {% block current_invoice_content %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Invoice number</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data1 %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><a href="/suppliers">Bruce & Clark</a></td>
+                            <td><a href="/invoices">A12334</a></td>
+                            <td>2023-09-29</td>
+                            <td>$150.00</td>
+                        </tr>
+                        <tr>
+                            <td><a href="/suppliers">Sysco</a></td>
+                            <td><a href="/invoices">A12334</a></td>
+                            <td>2023-09-25</td>
+                            <td>$2000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endblock %}
+            </div>
+    
+            <div class="data past-invoice">
+                <h2>Past Invoices</h2>
+                {% block past_invoice_content %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Invoice number</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data2 %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><a href="/suppliers">Sysco</a></td>
+                            <td><a href="/invoices">A12334</a></td>
+                            <td>2023-09-25</td>
+                            <td>$2000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endblock %}
+                <a class="button" href="{{ url_for('invoices') }}">
+                    <button>View all invoices</button>
+                </a>                
+            </div>
+                  
+            <div class="data sales-data">
+                <h2>Sales data</h2>
+                {% block sales_data_content %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Total Expense of the Month</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>$3221.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endblock %}
+                <a class="button" href="{{ url_for('salesdata') }}">
+                    <button>View all sales data</button>
+                  </a>
+            </div>
+        </div>
+    </div>
+        {{ dash_app_content|safe }} -->
+</body>
+</html>
+
+

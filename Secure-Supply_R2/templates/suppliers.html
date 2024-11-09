@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Suppliers</title>
+</head>
+<body class="container">
+    <div id='popup' class="popup" style="display: none;">
+        <div class="header">
+            <h1>Invoice List</h1>
+            <button>Close</button>
+        </div>
+        <div class="popup-content">
+            <table>
+                <thead>
+                    <th>Invoice ID</th>
+                    <th>Date Added</th>
+                </thead>
+                <tbody>
+                    <tr style="text-align: center;">
+                        <td>A023043</td>
+                        <td>02/23/2023</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>A0754321</td>
+                        <td>04/23/2023</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="popup" id="popup-items" style="display: none;">
+        <div class="header">
+            <h1>Items</h1>
+            <button id="close-items-button">Close</button>
+        </div>
+        <div class="popup-content">
+            <p>Cups</p>
+            <p>Lids</p>
+            <p>Straws</p>
+            <p>Sleeves</p>
+            <p>Espresso</p>
+        </div>
+    </div>
+
+
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <!-- <li><a href="#">View</a></li> -->
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li><a href="/view_suppliers_invoices">Temp_View</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="content-header">
+            <h1>Suppliers</h1>
+        </div>
+
+        <div class="data-parent">
+            <div class="data current-invoice">
+                <h2>Suppliers</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Date Added</th>
+                            <!-- <th>View</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="supplier-row">Bruce & Clark</td>
+                            <td>2023-03-21</td> 
+                            <td>
+                                <div class="items" onclick="openItemsPopup(this)">View Items</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="supplier-row">Discovery</td>
+                            <td>2023-05-19</td>
+                            <td>
+                                <div class="items" onclick="openItemsPopup(this)">View Items</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="supplier-row">Sysco</td>
+                            <td>2023-09-25</td>
+                            <td>
+                                <div class="items" onclick="openItemsPopup(this)">View Items</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="button">
+                    <button>Add a new supplier</button>
+                    <button>Edit supplier</button>        
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

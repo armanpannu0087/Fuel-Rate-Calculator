@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Amount Spent on Each Item</title>
+    <style>
+        /* Optional: Add some styling for better presentation */
+        /* body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        } */
+        .graph-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+<!-- </head>
+<body>
+    <h1>Total Amount Spent on Each Item</h1>
+
+    <div class="graph-container">
+        <h2>Graph Embedded Below:</h2>
+        <p>This bar chart displays the total amount spent on each item.</p>
+        <img src="data:image/png;base64,{{ plot_img_base64 }}" alt="Amount Spent on Each Item" style="width:80%; height:auto;">
+    </div>
+
+    <div class="other-info">
+        <h2>Other Information</h2>
+        <p>You can include additional information or descriptions about the graph or the data here.</p>
+        <p>This can be a summary of the data, the time period it covers, or any other relevant details.</p>
+    </div>
+</body>
+</html> -->
+
+
+<body class="container">
+
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <li><a href="#">View</a></li>
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li><a href="/view_suppliers_invoices">Temp_View</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+<!--    
+    <div class="content">
+        <div class="content-header">
+            <h1>Sales Data</h1>
+        </div>
+
+        <div class="data-parent">
+            <h1>Total Amount Spent on Each Item</h1>
+
+            <div class="graph-container">
+                <h2>Graph Embedded Below:</h2>
+                <p>This bar chart displays the total amount spent on each item.</p>
+                <img src="data:image/png;base64,{{ plot_img_base64 }}" alt="Amount Spent on Each Item" style="width:80%; height:auto;">
+            </div>
+        
+            <div class="other-info">
+                <h2>Other Information</h2>
+                <p>You can include additional information or descriptions about the graph or the data here.</p>
+                <p>This can be a summary of the data, the time period it covers, or any other relevant details.</p>
+            </div>
+        </div> -->
+</body>
+
+

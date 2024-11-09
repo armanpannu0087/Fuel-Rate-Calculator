@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger-menu {
+                display: block;
+            }
+            .navigation ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="container">
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <!-- <li><a href="#">View</a></li> -->
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="banner">
+        <a href="/upload"><h1>Click here to upload an invoice</h1></a>
+        <p>Do you really know what you're paying for your fuel?</p>
+        <p>Contact us for a free savings estimate: <a href="mailto:info@fairfuelprice.com">info@fairfuelprice.com</a></p>
+    </section>
+    <div class="content-header">
+        <h1>Dashboard - IT</h1>
+    </div>
+    <div class="content">
+        <div class="data-parent">
+            <div class="data templates">
+                <h2>Template Management</h2>
+                {% block current_invoice_content %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th><a href="/templates">Create a New Template</a></th>
+                            <th><a href="/templates">Edit Templates</a></th>
+                            <th><a href="/templates">Remove Templates</a></th>
+                            <th><a href="/templates">Current Templates</a></th>
+                        </tr>
+                    </thead>
+                </table>
+                {% endblock %}
+            </div>
+    
+            <div class="data user-management">
+                <h2>User Management</h2>
+                <table>
+                    <th>
+                        <tr>
+                            <th>View All Users</th>
+                            <th>Reset User Password</th>
+                            <th>Deactivate Account</th>
+                        </tr>
+                    </th>
+                </table>
+            </div>
+                  
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; Fair Fuel Price</p>
+    </footer>
+</body>
+
+<script>
+    function updateDateTime() {
+        var currentDateTime = new Date();
+        var day = currentDateTime.getDate();
+        var month = currentDateTime.toLocaleString('default', { month: 'long' }); // Full month name
+        var year = currentDateTime.getFullYear();
+        var hours = currentDateTime.getHours();
+        var minutes = currentDateTime.getMinutes();
+        var seconds = currentDateTime.getSeconds();
+        var dateString = month + ' ' + day + ', ' + year;
+        var timeString = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        document.getElementById('current-date').textContent = dateString;
+        document.getElementById('current-time').textContent = timeString;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+</script>
+</html>

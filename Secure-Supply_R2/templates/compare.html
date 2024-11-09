@@ -1,0 +1,536 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Compare Price</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="container">
+  
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <!-- <li><a href="#">View</a></li> -->
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <h1>Compare</h1>
+        <div id="comparecontent">
+            <div id="compare-container1">
+                <form id="compareForm" action="/compare" method="POST">
+                    <label for="client_name">Select Client:</label>
+                    <select name="client_name" id="client_name">
+                        <option value="" disabled selected>Select Client</option>
+                        {% for client_name in client_names %}
+                            <option value="{{ client_name }}">{{ client_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label for="invoice_date">Select Invoice Date:</label>
+                    <select name="invoice_date" id="invoice_date">
+                        <option value="" disabled selected>Select Invoice Date</option>
+                    </select>
+                    <br>
+                    <label for="company">Select Company:</label>
+                    <select name="company" id="company">
+                        <option value="" disabled selected>Select Company</option>
+                        <option value="Petrocan">Petrocan</option>
+                        <option value="Shell">Shell</option>
+                    </select>
+                    <br>
+                    <label for="location">Select Location:</label>
+                    <select name="location" id="location">
+                        <option value="" disabled selected>Select Location</option>
+                        <!-- Locations will be populated dynamically based on the selected company -->
+                    </select>
+                    <br>
+                    <label for="record_date">Select Record Date:</label>
+                    <select name="record_date" id="record_date">
+                        <option value="" disabled selected>Select Record Date</option>
+                        <!-- Record dates will be populated dynamically based on the selected company and location -->
+                    </select>
+                    <br>
+                    <!-- Add hidden input fields to keep track of the selected client, company, and location -->
+                    <input type="hidden" name="selected_client" id="selected_client">
+                    <input type="hidden" name="selected_company" id="selected_company">
+                    <input type="hidden" name="selected_location" id="selected_location">
+                </form>
+            </div>
+
+            <div id="compare-container2">
+                <!-- Display selected values, hidden temp info for final deployment -->
+                <div id="selectedValues">
+                    <span id="selectedValuesDisplay" style="display: none;"></span>
+                </div>
+
+
+                <!-- Display unit price -->
+                <div id="unitPriceDisplay">
+                    Unit Price: <span id="unitPrice"></span>
+                </div>
+
+                <!-- Display default price -->
+                <div id="defaultTypeDisplay">
+                    Default Price: <span id="defaultPrice"></span>
+                </div>
+
+            
+                <div id="someinfo">
+                    <h3>*All pricing in Canadian cents per litre.</h3>
+                </div>
+                
+                
+
+                <!-- Add a button to trigger fetching and displaying query results -->
+                <button id="fetchResultsButton">Fetch Results</button>
+            </div>
+        </div>
+        <!-- Add a section to display query results -->
+        <div id="queryResults">
+            <h3>Query Results:</h3>
+            <p class="note">*The difference: invoice unit price - gas type price.  (+: client paid more  /  -: client paid less)</p>
+            <table id="queryResultsTable">
+                <!-- Table headers will be added dynamically -->
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Add JavaScript to handle dropdown changes and display selected values -->
+    <script>
+        function updateSelectedValues() {
+            var selectedValues = {
+                client_name: document.getElementById('client_name').value,
+                invoice_date: document.getElementById('invoice_date').value,
+                company: document.getElementById('company').value,
+                location: document.getElementById('location').value,
+                record_date: document.getElementById('record_date').value
+            };
+            document.getElementById('selectedValuesDisplay').innerText = JSON.stringify(selectedValues);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSelectedValues(); // Display selected values on page load
+            
+            // Add event listeners to dropdowns
+            document.getElementById('client_name').addEventListener('change', function() {
+                var selectedClient = this.value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/get_invoice_dates?client_name=" + selectedClient, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var invoiceDates = JSON.parse(xhr.responseText);
+                        var invoiceDropdown = document.getElementById('invoice_date');
+                        invoiceDropdown.innerHTML = ''; // Clear previous options
+                        var defaultOption = document.createElement('option');
+                        defaultOption.text = 'Select Invoice Date';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        invoiceDropdown.add(defaultOption);
+                        for (var i = 0; i < invoiceDates.length; i++) {
+                            var option = document.createElement('option');
+                            option.value = invoiceDates[i];
+                            option.text = invoiceDates[i];
+                            invoiceDropdown.add(option);
+                        }
+                        updateSelectedValues(); // Update selected values after populating invoice dates
+                        fetchDefaultPrice();
+                    }
+                };
+                xhr.send();
+            });
+    
+            document.getElementById('invoice_date').addEventListener('change', function() {
+                updateSelectedValues();
+                fetchUnitPrice();
+            });
+            
+
+
+            function fetchUnitPrice() {
+                var selectedClient = document.getElementById('client_name').value;
+                var invoiceDate = document.getElementById('invoice_date').value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/fetch_unit_price", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var unitPrice = JSON.parse(xhr.responseText);
+                        document.getElementById('unitPrice').textContent = unitPrice;
+                    }
+                };
+                xhr.send(JSON.stringify({client_name: selectedClient, invoice_date: invoiceDate}));
+            }
+
+            // Function to fetch and display the default price
+            function fetchDefaultPrice() {
+                var selectedClient = document.getElementById('client_name').value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/fetch_default_price", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var defaultPrice = JSON.parse(xhr.responseText);
+                        document.getElementById('defaultPrice').textContent = defaultPrice;
+                    }
+                };
+                xhr.send(JSON.stringify({client_name: selectedClient}));
+            }
+
+            // Add event listener to the fetch results button
+            document.getElementById('fetchResultsButton').addEventListener('click', function() {
+                fetchQueryResults();
+            });
+    
+            // Fetch and display query results when company changes
+            document.getElementById('company').addEventListener('change', function() {
+                // Reset the selected company value
+                document.getElementById('selected_company').value = this.value;
+
+                // Clear the options of the record date dropdown
+                var recordDropdown = document.getElementById('record_date');
+                recordDropdown.innerHTML = ''; // Clear previous options
+
+                // Add a default option
+                var defaultOption = document.createElement('option');
+                defaultOption.text = 'Select Record Date';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                recordDropdown.add(defaultOption);
+
+                // Update selected values display
+                updateSelectedValues();
+
+                // Fetch locations for the newly selected company
+                var company = this.value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/get_locations?company=" + company, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var locations = JSON.parse(xhr.responseText);
+                        var locationDropdown = document.getElementById('location');
+                        locationDropdown.innerHTML = ''; // Clear previous options
+                        var defaultOption = document.createElement('option');
+                        defaultOption.text = 'Select Location';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        locationDropdown.add(defaultOption);
+                        for (var i = 0; i < locations.length; i++) {
+                            var option = document.createElement('option');
+                            option.value = locations[i];
+                            option.text = locations[i];
+                            locationDropdown.add(option);
+                        }
+                        updateSelectedValues(); // Update selected values after populating locations
+                    }
+                };
+                xhr.send();
+            });
+    
+            function fetchQueryResults() {
+                var company = document.getElementById('company').value;
+                var location = document.getElementById('location').value; // Get the location value
+                var record_date = document.getElementById('record_date').value; // Get the record_date value
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/fetch_query_results?company=" + company + "&location=" + location + "&record_date=" + record_date, true); // Include the record_date in the request URL
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var results = JSON.parse(xhr.responseText);
+                        displayQueryResults(results);
+                    }
+                };
+                xhr.send();
+            }
+    
+            function clearUnitPriceDisplay() {
+                document.getElementById('unitPrice').textContent = ''; // Clear the content of unitPrice span
+            }
+
+            document.getElementById('client_name').addEventListener('change', function() {
+                clearUnitPriceDisplay(); // Clear unit price display when client is reselected
+          
+            });
+
+            function displayQueryResults(results) {
+                var queryResultsTable = document.getElementById('queryResultsTable');
+                // Clear previous results
+                queryResultsTable.innerHTML = '';
+
+                // Determine the data structure based on the first result
+                var isShellData = 'Product' in results[0];
+                var columns;
+
+                if (isShellData) {
+                    // Shell data structure
+                    // Initialize an object to store product prices for each location
+                    var productPrices = {};
+
+                    // Iterate through the results to populate the productPrices object
+                    results.forEach(function(result) {
+                        var location = result.Location;
+
+                        // Check if the location exists in the productPrices object
+                        if (!productPrices[location]) {
+                            productPrices[location] = {};
+                        }
+
+                        // Add or update the price for the product at the current location
+                        productPrices[location][result.Product] = result['Price (cpl)'];
+                    });
+
+                    // Determine columns based on products
+                    columns = ['Location', 'Effective Date'].concat(Object.keys(productPrices[Object.keys(productPrices)[0]]));
+                } else {
+                    // Petrocan data structure
+                    // Get column names from the first result
+                    columns = Object.keys(results[0]);
+                }
+
+                // Create table headers using the determined columns
+                var headersRow = document.createElement('tr');
+                columns.forEach(function(column) {
+                    var header = document.createElement('th');
+                    header.textContent = column;
+                    headersRow.appendChild(header);
+                });
+                queryResultsTable.appendChild(headersRow);
+
+                // Add data rows
+                if (isShellData) {
+                    for (var location in productPrices) {
+                        var row = document.createElement('tr');
+                        row.appendChild(createCell(location));
+                        row.appendChild(createCell(results[0]['Effective Date']));
+                        columns.slice(2).forEach(function(product) {
+                            row.appendChild(createCell(productPrices[location][product] || ''));
+                        });
+                        queryResultsTable.appendChild(row);
+                    }
+                } else {
+                    results.forEach(function(result) {
+                        var row = document.createElement('tr');
+                        columns.forEach(function(column) {
+                            row.appendChild(createCell(result[column] || ''));
+                        });
+                        queryResultsTable.appendChild(row);
+                    });
+                }
+            }
+
+
+
+
+
+            // Function to calculate and return the price difference for each gas type
+            function calculatePriceDifferences(unitPrice, prices) {
+                console.log('Unit Price:', unitPrice);
+                console.log('Prices:', prices);
+
+                var priceDifferences = {};
+                for (var gasType in prices) {
+                    if (gasType !== 'Location' && gasType !== 'Effective Date') {
+                        var gasPrice = parseFloat(prices[gasType]); // Convert string price to float
+                        console.log('Gas Price for', gasType, ':', gasPrice);
+
+                        var unitPriceNum = parseFloat(unitPrice); // Convert unit price to float
+                        console.log('Unit Price as Number:', unitPriceNum);
+
+                        var difference = unitPriceNum - gasPrice;
+                        console.log('Difference for', gasType, ':', difference);
+
+                        priceDifferences[gasType] = difference > 0 ? `(+${difference.toFixed(2)})` : `(${difference.toFixed(2)})`;
+                    }
+                }
+                console.log('Price Differences:', priceDifferences);
+                return priceDifferences;
+            }
+
+
+            // Update the displayQueryResults function to include price differences
+            function displayQueryResults(results) {
+                var queryResultsTable = document.getElementById('queryResultsTable');
+                // Clear previous results
+                queryResultsTable.innerHTML = '';
+
+                // Determine the data structure based on the first result
+                var isShellData = 'Product' in results[0];
+                var columns;
+
+                if (isShellData) {
+                    // Shell data structure
+                    // Initialize an object to store product prices for each location
+                    var productPrices = {};
+
+                    // Iterate through the results to populate the productPrices object
+                    results.forEach(function(result) {
+                        var location = result.Location;
+
+                        // Check if the location exists in the productPrices object
+                        if (!productPrices[location]) {
+                            productPrices[location] = {};
+                        }
+
+                        // Add or update the price for the product at the current location
+                        productPrices[location][result.Product] = result['Price (cpl)'];
+                    });
+
+                    // Determine columns based on products
+                    columns = ['Location', 'Effective Date'].concat(Object.keys(productPrices[Object.keys(productPrices)[0]]));
+                } else {
+                    // Petrocan data structure
+                    // Get column names from the first result
+                    columns = Object.keys(results[0]);
+                }
+
+
+
+                // Add data rows with price differences
+                if (isShellData) {
+
+                    // Create table headers using the determined columns
+                    var headersRow = document.createElement('tr');
+                    columns.forEach(function(column) {
+                        var header = document.createElement('th');
+                        header.textContent = column;
+                        headersRow.appendChild(header);
+                    });
+                    queryResultsTable.appendChild(headersRow);
+
+                    for (var location in productPrices) {
+                        var row = document.createElement('tr');
+                        row.appendChild(createCell(location));
+                        row.appendChild(createCell(results[0]['Effective Date']));
+
+                        // Calculate and display price differences
+                        var unitPrice = parseFloat(document.getElementById('unitPrice').textContent); // Get the unit price
+                        var priceDifferences = calculatePriceDifferences(unitPrice, productPrices[location]);
+                        columns.slice(2).forEach(function(product) {
+                            var cell = createCell(productPrices[location][product] + priceDifferences[product] || '');
+                            row.appendChild(cell);
+                        });
+
+                        queryResultsTable.appendChild(row);
+                    }
+                } else {
+                    // Petrocan data structure
+                    results.forEach(function(result) {
+                        var row = document.createElement('tr');
+                        
+
+                        // Create an array of column names with the last column moved to the second position
+                        var columnsUpdated = Object.keys(result).filter(function(column) {
+                            return column !== Object.keys(result)[Object.keys(result).length - 1];
+                        });
+                        columnsUpdated.splice(1, 0, Object.keys(result)[Object.keys(result).length - 1]);
+
+                        // Create table headers using the updated columns
+                        var headersRow = document.createElement('tr');
+                        columnsUpdated.forEach(function(column) {
+                            var header = document.createElement('th');
+                            header.textContent = column;
+                            headersRow.appendChild(header);
+                        });
+                        queryResultsTable.appendChild(headersRow);
+
+                        // Append the first and last values of the result object to the row
+                        var firstValue = result[Object.keys(result)[0]]; // Get the first value
+                        var lastValue = result[Object.keys(result)[Object.keys(result).length - 1]]; // Get the last value
+                        row.appendChild(createCell(firstValue || '')); // Append the first value as a cell
+                        row.appendChild(createCell(lastValue || '')); // Append the last value as a cell
+                                        
+
+
+                        // Calculate and display price differences for Petrocan data
+                        var unitPrice = parseFloat(document.getElementById('unitPrice').textContent); // Get the unit price
+                        var priceDifferences = calculatePriceDifferences(unitPrice, result);
+                        Object.keys(priceDifferences).forEach(function(product) {
+                            var cell = createCell(result[product] + priceDifferences[product] || '');
+                            row.appendChild(cell);
+                        });
+                        queryResultsTable.appendChild(row);
+                    });
+
+                    
+                }
+            }
+
+
+            // Function to create a table cell
+            function createCell(text) {
+                var cell = document.createElement('td');
+                cell.textContent = text;
+                return cell;
+            }
+
+
+    
+            // Fetch and display query results on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                fetchQueryResults();
+            });
+    
+    
+            document.getElementById('location').addEventListener('change', function() {
+                updateSelectedValues();
+                var company = document.getElementById('company').value;
+                var location = this.value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/get_record_dates?company=" + company + "&location=" + location, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var recordDates = JSON.parse(xhr.responseText);
+                        var recordDropdown = document.getElementById('record_date');
+                        recordDropdown.innerHTML = ''; // Clear previous options
+                        var defaultOption = document.createElement('option');
+                        defaultOption.text = 'Select Record Date';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        recordDropdown.add(defaultOption);
+                        for (var i = 0; i < recordDates.length; i++) {
+                            var option = document.createElement('option');
+                            option.value = recordDates[i];
+                            option.text = recordDates[i];
+                            recordDropdown.add(option);
+                        }
+                        updateSelectedValues(); // Update selected values after populating record dates
+                    }
+                };
+                xhr.send();
+            });
+    
+            document.getElementById('record_date').addEventListener('change', function() {
+                updateSelectedValues();
+            });
+        });
+    </script>
+</body>
+</html>

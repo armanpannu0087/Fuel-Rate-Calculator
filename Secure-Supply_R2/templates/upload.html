@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Upload</title>
+</head>
+<style>
+    .content {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .left-panel {
+        flex-basis: 45%;
+    }
+
+    .right-panel {
+        flex-basis: 45%;
+    }
+
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .lists {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .lists h2 {
+        margin-bottom: 10px;
+    }
+
+    .lists ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .lists ul li {
+        margin-bottom: 5px;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        margin-bottom: 20px;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+    }
+
+    .upload-btn input {
+        display: block;
+    }
+
+    .expenses {
+        margin-bottom: 5px;
+        width: 800px;
+    }
+
+    #expense-form {
+        width: 740px;
+        height: auto;
+    }
+
+    .expenses ul li {
+        width: 800px;
+    }
+
+    .upload-btn input[type="submit"] {
+    margin-top: 10px;
+    }
+</style>
+
+<script>
+    function uploadImage(event) {
+    event.preventDefault();
+    const file = document.getElementById('fileInput').files[0];
+    if (file && file.type.includes('image')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        }
+    }
+    
+
+</script>
+
+</head>
+<body>
+
+<header class="header">
+    <h1>Fair Fuel Price</h1>
+    <nav class="navigation">
+        <ul>
+            <li><a href="/">Dashboard</a></li>
+            <li><a href="/upload">Upload Invoice</a></li>
+            <!-- <li><a href="#">View</a></li> -->
+            <li><a href="/compare">Compare Pricing</a></li>
+            <li><a href="/getprice">Rack Prices</a></li>
+            <li><a href="/create_invoice">Create Invoice</a></li>
+            <li><a href="/manage_client">Manage Client</a></li>
+            <li class="hamburger-menu">&#9776;</li>
+        </ul>
+    </nav>
+</header>
+
+<div class="content">
+    <div class="left-panel">
+        <!-- Upload File Form -->
+        <div class="upload-btn">
+            <form enctype="multipart/form-data" method="POST" onsubmit="uploadImage(event)">
+                <input type="file" name="file" id="fileInput" accept=".jpg, .jpeg">
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+
+        <h5>* After clicking "Upload", wait 10 seconds and then click "Save Data".</h5>
+        <div class="save-btn">
+            <button type="button" id="save-button" onclick="saveUnitPrice()">Save Data</button>
+        </div>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
+        <!-- Image Preview -->
+        <!-- {% if file_path %}
+            <h2>Uploaded Image</h2>
+            <img src="{{ file_path }}" id="imagePreview" alt="Uploaded Image" width="100%" height="500px" />
+        {% endif %} -->
+        <!--<div class="parsed-text" id="parsedTextContainer">-->
+            <!-- Parsed text will be displayed here -->
+        <!--</div>
+        -->
+
+        
+    </div>
+<!--
+    <div class="right-panel">
+        By Individual Expense
+        <div class="lists expenses">
+            <h2>Individual Expenses</h2>
+            
+            <form id="expense-form">
+                <ul>
+                    {% if individual_expenses %}
+                        {% for item_code, price in individual_expenses.items() %}
+                            <li>
+                                <label for="{{ item_code }}">Item Code:</label>
+                                <input type="text" id="{{ item_code }}" name="item_code" value="{{ item_code }}">
+                                <label for="{{ price }}">Price:</label>
+                                <input type="text" id="{{ price }}" name="price" value="{{ price }}">
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </form>
+        </div>
+
+        <button type="button" id="update-button" style="width: 120px; padding: 3px;" onclick="displayDatabaseData()">Update Values</button>
+
+
+        <!-- Upload to Database Button
+        <div class="upload-to-db">
+            <button type="button" id="upload-to-db-button">Update Database</button>
+        </div>
+        <div class="alerts">
+            <h2>alerts</h2>
+            <ul>
+                <li>
+                    No alerts!
+                </li>
+            </ul>
+        </div>
+        <div class="database-data">
+            <h2></h2>
+            <pre id="database-json"></pre>
+        </div>
+
+
+    </div>
+</div> -->
+<script>
+    var databaseExpenses = {};
+    var invoice_number = "INV12145";
+    function displayDatabaseData() {
+        // Make an AJAX request to fetch data from the database
+        $.ajax({
+            type: 'GET',
+            url: '/fetch_database_data', // Replace with the appropriate route in your Flask app
+            success: function(data) {
+                // Store the data obtained from the database
+                var jsonData = JSON.stringify(data, null, 2); // The third argument is for pretty-printing
+                $('.alerts ul').empty();
+                var currentPrices = {};
+                $('#expense-form ul li').each(function() {
+                    var item_code = $(this).find('input[name="item_code"]').val();
+                    var price = parseFloat($(this).find('input[name="price"]').val());
+
+                    if (!isNaN(price)) {
+                        currentPrices[item_code] = price;
+                    }
+                });
+                for (var check_code in currentPrices) {
+                    var currentPrice = currentPrices[check_code];
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].item_code === check_code) {
+                            var check_price = data[i].unit_price;
+                            if (currentPrice > check_price){
+                                priceDifference = currentPrice - check_price;
+                                $('.alerts ul').append('<li>' + check_code + ' price is $' + priceDifference.toFixed(2) + ' greater than last invoice!</li>');
+                            }
+                            break;
+                        }
+                    }
+            }
+            var alertList = document.querySelector('.alerts ul');
+            var alertLength = alertList.querySelectorAll('li').length;
+            if (alertLength == 0) {
+                $('.alerts ul').append('<li>' + 'No alerts!');
+            }
+                
+                
+            },
+            error: function(error) {
+                console.log('Error fetching database data:', error);
+            }
+        });
+    }
+    
+    $(document).ready(function() {
+
+    $('#update-button').click(function() {
+            updateAlerts();
+        });
+
+    $('form').submit(function(event) {
+            event.preventDefault();
+            var formData = new FormData($(this)[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/upload',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#parsedTextContainer').html('<h2>Parsed Text from PDF</h2><pre>' + response.parsed_text + '</pre>');
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+
+
+    $('form').submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData($(this)[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '/upload',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $('#parsedTextContainer').html('<h2>Parsed Text from PDF</h2><pre>' + response.parsed_text + '</pre>');
+                if (response.individual_expenses) {
+                    // Clear the existing list
+                    $('.expenses ul').empty();
+
+                    for (var item_code in response.individual_expenses) {
+                        var price = response.individual_expenses[item_code];
+
+                        // Create a new list item with input fields for editing
+                        var listItem = $('<li></li>');
+                        listItem.append('<label for="' + item_code + '">Item Code:</label>');
+                        listItem.append('<input type="text" id="' + item_code + '" name="item_code" value="' + item_code + '">');
+                        listItem.append('<label for="' + price + '">Price:</label>');
+                        listItem.append('<input type="text" id="' + price + '" name="price" value="' + price + '">');
+                        listItem.append('<label for="{{ invoice_number }}">Invoice Number:</label>')
+                        listItem.append('<input type="text" id="' + invoice_number +'"name="invoice_number" value="' + invoice_number + '">');
+
+                        $('.expenses ul').append(listItem);
+                    }
+
+                    // Check the database for alerts
+                    fetchDatabaseValues(function(existingValues) {
+                        generateAlerts(response, existingValues);
+                    });
+                }
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+
+
+    // Add an event handler for the "Upload to Database" button
+    $('#upload-to-db-button').click(function() {
+        // Collect all modified data from the input fields
+        var updatedData = [];
+
+        $('#expense-form ul li').each(function() {
+            var item_code = $(this).find('input[name="item_code"]').val();
+            var price = $(this).find('input[name="price"]').val();
+            var invoice_number = $(this).find('input[name="invoice_number"]').val();
+            updatedData.push({ item_code: item_code, price: price, invoice_number: invoice_number });
+        });
+
+        // Send the updated data to the server for processing as JSON
+        $.ajax({
+            type: 'POST',
+            url: '/update',
+            data: JSON.stringify(updatedData), // Convert the JavaScript object to JSON
+            contentType: 'application/json', // Specify the content type as JSON
+            success: function(response) {
+                // Handle the response if needed
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+});
+function saveUnitPrice() {
+    // Make an AJAX request to trigger the download
+    $.ajax({
+        type: 'GET',
+        url: '/download_unit_price',
+        success: function(response) {
+            // If successful, handle the download (e.g., show success message)
+            console.log('File downloaded successfully:', response);
+        },
+        error: function(error) {
+            // If there's an error, handle it (e.g., show error message)
+            console.log('Error downloading file:', error);
+        }
+    });
+}
+
+</script>
+
+
+
+</body>
+</html>

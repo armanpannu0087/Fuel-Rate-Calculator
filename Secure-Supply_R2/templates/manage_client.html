@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Manage Client</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="container">
+  
+    <header class="header">
+        <h1>Fair Fuel Price</h1>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/upload">Upload Invoice</a></li>
+                <!-- <li><a href="#">View</a></li> -->
+                <li><a href="/compare">Compare Pricing</a></li>
+                <li><a href="/getprice">Rack Prices</a></li>
+                <li><a href="/create_invoice">Create Invoice</a></li>
+                <li><a href="/manage_client">Manage Client</a></li>
+                <li class="hamburger-menu">&#9776;</li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+
+        <h1>Manage Client</h1>
+        <div class="content1">  
+            <label for="clientName">Select the Client You Want to Remove:</label>
+            <select id="clientName">
+                <option value="" selected disabled></option>
+                {% for client_name in client_names %}
+                    <option value="{{ client_name }}">{{ client_name }}</option>
+                {% endfor %}
+            </select>
+            <button id="deletebutton" onclick="deleteClient()">Delete</button>
+        </div>
+        <h class="note">*Please be awared that the invoice records would be deleted as well.</h>
+        <div id="responseMessage"></div>
+
+    
+    </div>
+
+    <!-- Add JavaScript to handle dropdown changes and display selected values -->
+    <script>
+        function deleteClient() {
+            var selectedClient = document.getElementById('clientName').value;
+
+            if (!selectedClient) {
+                alert("Please select a client to delete.");
+                return;
+            }
+            fetch('/manage_client', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ client_name: selectedClient })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('responseMessage').innerText = data;
+                document.getElementById('clientName').selectedIndex = 0;
+
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

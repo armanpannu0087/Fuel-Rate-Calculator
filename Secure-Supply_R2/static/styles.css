@@ -1,0 +1,523 @@
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+}
+
+
+.graph{
+    margin-top: 0px;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* background-color: #333; */
+    background-color: #0a253b;
+    /* background-color: rgb(85,67,72, 0.8); */
+    color: #fff;
+}
+
+.logo img {
+    width: 100px;
+}
+
+h1 {
+    padding-left: 20px;
+}
+
+.header .navigation {
+    height: 100%;
+}
+
+.navigation ul {
+    list-style-type: none;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.navigation ul li {
+    display: inline-block;
+    margin-right: 20px;
+    text-decoration: none;
+    font-size: 17px;
+    height: 100%;
+    line-height: 94px;
+    padding: 0 20px;
+}
+
+.navigation ul li a {
+    color: #fff;
+}
+
+.navigation ul li:hover {
+    background-color: #333;
+}
+
+
+.banner {
+    background-image: url('gas_banner2.jpeg');
+    /* background-image: url('gas_banner2.jpeg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    padding: 150px 0;
+    /*color: #fff;*/
+    color: #ffffff;
+}
+
+.banner h1,
+.banner p {
+    margin-left: 45%;
+    margin-bottom: 3px;
+}
+
+.main-section {
+    padding: 40px;
+    background-color: #f4f4f4;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    /* background-color: #333; */
+    background-color: #0a253b;
+    color: #fff;
+}
+
+/* Dashboard and Supplier page CSS */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: "Montserrat", sans-serif;
+}
+
+
+.side-nav {
+    display: flex;
+    flex: 0 0 250px;
+    flex-direction: column;
+    background-color: #333;
+    height: 100%;
+    padding: 20px;
+    align-items: center;
+}
+
+.side-nav ul {
+    list-style: none; 
+    padding: 0;
+}
+
+.side-nav ul li {
+    margin-bottom: 20px;
+}
+
+.side-nav a {
+    color: white;
+}
+
+.content {
+    flex: 1;
+    /* background-color: #f7f3ec; */
+    background-color: #f6fcfc;
+    /* color: #554348; */
+    height: 100%;
+    padding: 15px;
+}
+
+.content .data {
+    padding: 25px;
+    width: 80%;
+}
+
+.data h2, .data table {
+    text-align: center;
+    margin: 0 auto;
+    /* border: 1px solid black; */
+    border: 1px solid #333;
+    color: #333;
+    width: 100%;
+
+}
+
+.data h2 {
+    background-color: rgb(244, 231, 213)
+}
+
+.data table {
+    background-color:#fffbf5;
+}
+
+
+
+.data-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button {
+    display: flex;
+    justify-content: end;
+    text-decoration: none;
+}
+
+.button button {
+    border: none;
+    margin-top: 5px;
+    margin-left: 5px;
+    padding: 5px;
+    text-align: center;
+    background-color: #e7e7e7;
+    width: 100px;
+    height: 40px;
+}
+
+.button button:hover {
+    background-color: #B8B8B8;
+    color: black;
+  }
+
+.content-header h1 {
+    border-bottom: 2px solid black;
+    /* background-color: #f7f3ec; */
+    background-color: #f6fcfc;
+    color: #333;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+/* Login page CSS */
+
+.container2 {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    margin-top: 150px;
+    /* background-image: url(https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3871&q=80);
+    */
+    background-color: #0a253b;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    overflow: hidden;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    width: 50%;
+    background-color: #f6fcfc;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 25px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    height: 40%;
+    width: 40%;
+    padding: 30px;
+    background-color: rgb(197, 197, 197);
+    border-radius: 10px;
+
+}
+
+input {
+    margin-bottom: 15px;
+}
+
+.input {
+    width: 97%;
+    border-radius: 6px;
+    font-size: 17px;
+    padding: 8px;
+    border: 1px solid grey;
+}
+
+#login-btn {
+    width: 100%;
+    font-size: 20px;
+    margin-top: 10px;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    background-color: #333;
+    color: white;
+}
+
+#login-center {
+    display: flex;
+    justify-content: center;
+}
+.login-container h1 {
+    padding: 20px;
+}
+
+/* Dashboard Dash Graph CSS */
+#item-price-graph {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* CSS for the dropdown */
+#item-dropdown {
+    width: 70%;
+    margin: 10px auto;
+}
+
+#react-entry-point {
+    /* background-color: #f7f3ec; */
+    background-color: #f6fcfc;
+}
+
+#react-entry-point div label {
+    padding-top: 10px;
+}
+
+.section-parent {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: center; */
+}
+
+.parent {
+    display: flex;
+    flex-direction: row;
+}
+
+.graph {
+    flex: 1;
+}
+
+.popup {
+    position: fixed;
+    top: 5%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25cm; 
+    height: 85%; 
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000
+}
+
+#translucent-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    /* background-color: #f4f4f4; */
+    background-color: #554348;
+    color: #fff;
+}
+
+.popup .header h1 {
+    margin: 0;
+}
+
+.popup .header button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.popup .header button:hover {
+    text-decoration: underline;
+}
+
+.popup .popup-content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+#popup .popup-content p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+
+/* new for getprice */
+
+.price-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 100px;
+    justify-items: center;
+
+}
+
+.updateh1 {
+    color: #554348;
+    font-size: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.price-options a:first-child {
+    margin-top: 12px;
+    margin-left: 320px;
+}
+
+.price-options a:nth-child(2) {
+    margin-right: 320px;
+
+}
+
+.content_price {
+    background-color: #f6fcfc;
+    padding: 15px;
+    
+}
+
+.effective {
+
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    width: 20%;
+    padding: 30px;
+    background-color: rgba(227,222,215, 0.9); 
+    
+}
+
+
+/* new for compart */
+#selectedValues, #unitPriceDisplay, #fetchResultsButton, #defaultTypeDisplay, #someinfo {
+    margin: 15px;
+}
+
+#unitPriceDisplay, #defaultTypeDisplay, #someinfo {
+    color: royalblue;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+
+#someinfo, .note {
+    color: rgb(177, 9, 9);
+    font-size: 15px;
+    font-style: italic;
+}
+
+
+
+#comparecontent {
+    display: flex;
+}
+
+#compare-container2 {
+    flex: 2;
+}
+
+#compare-container2 {
+    flex: 1;
+}
+
+#compareForm {
+
+    height: 70%;
+    width: 70%;
+}
+
+
+/* add client */
+#dateOfInvoice, #deliveredTo, #unitPrice{
+    margin-bottom: 0px !important;
+    height: 50px;
+    /* padding-bottom: 20px; */
+}
+
+#createClientForm label {
+    font-weight: bold; 
+    color: #e6ecf3; 
+    margin-bottom: 10px; 
+    display: block; 
+}
+
+#createClientForm{
+    height: 70%;
+    max-width: 500px;
+    margin: 0 auto; 
+    padding: 20px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    background-color: #445564;
+}
+
+#responseMessage {
+    text-align: right;
+    font-weight: bold;
+    font-size: 20px; 
+    color:rgb(177, 9, 9);
+}
+
+
+.content1 {
+    text-align: center; 
+    margin-top: 3%;
+    margin-bottom: 20%;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#clientName {
+    padding: 10px;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    width: 30px; 
+    height: 30px; 
+}
+
+
+#deletebutton {
+    width: 100px; 
+    height: 30px; 
+    font-size: 20px; 
+    background-color: #0f265b;
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer;
+}
+

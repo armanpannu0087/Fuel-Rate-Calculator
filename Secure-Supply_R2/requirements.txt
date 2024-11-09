@@ -1,0 +1,11 @@
+flask
+flask_mysqldb
+werkzeug
+pandas
+dash
+pymongo
+plotly
+bs4
+requests
+fitz
+pytesseract
